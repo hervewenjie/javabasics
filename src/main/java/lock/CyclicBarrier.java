@@ -44,8 +44,7 @@ public class CyclicBarrier {
         try {
             final Generation g = generation;
 
-            if (g.broken)
-                throw new BrokenBarrierException();
+            if (g.broken) throw new BrokenBarrierException();
 
             if (Thread.interrupted()) {
                 breakBarrier();
@@ -53,10 +52,12 @@ public class CyclicBarrier {
             }
 
             int index = --count;
+            // reached point
             if (index == 0) {  // tripped
                 boolean ranAction = false;
                 try {
                     final Runnable command = barrierCommand;
+                    // run command if any
                     if (command != null)
                         command.run();
                     ranAction = true;
@@ -93,6 +94,7 @@ public class CyclicBarrier {
                 if (g != generation)
                     return index;
 
+                // signal all here
                 if (timed && nanos <= 0L) {
                     breakBarrier();
                     throw new TimeoutException();
@@ -118,6 +120,7 @@ public class CyclicBarrier {
         return parties;
     }
 
+    // main method await
     public int await() throws InterruptedException, BrokenBarrierException {
         try {
             return dowait(false, 0L);
